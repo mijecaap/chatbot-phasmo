@@ -1,11 +1,79 @@
-# React + Vite
+# Chatbot Phasmo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Un chatbot moderno construido con React y Vite que se conecta a un webhook y renderiza respuestas en Markdown.
 
-Currently, two official plugins are available:
+## 🚀 Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 💬 Interfaz de chat moderna y responsive
+- 📝 Renderizado de Markdown con `react-markdown`
+- 🎨 UI elegante con iconos de `lucide-react`
+- ⚡ Desarrollo rápido con Vite
+- 🔌 Integración con webhook personalizable
+- ✨ Animaciones y transiciones suaves
+
+## 📦 Instalación
+
+```bash
+npm install
+```
+
+## ⚙️ Configuración
+
+1. Copia el archivo `.env.example` a `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Edita el archivo `.env` y configura tu URL del webhook:
+```env
+VITE_WEBHOOK_URL=https://tu-webhook-url.com/api/chat
+```
+
+## 🎯 Uso
+
+### Modo desarrollo
+```bash
+npm run dev
+```
+
+### Build para producción
+```bash
+npm run build
+```
+
+### Preview del build
+```bash
+npm run preview
+```
+
+## 🔌 Formato del Webhook
+
+El webhook debe:
+
+**Request:**
+```json
+{
+  "message": "mensaje del usuario"
+}
+```
+
+**Response:**
+```json
+{
+  "reply": "Respuesta en **markdown** del bot"
+}
+```
+
+## 🛠️ Tecnologías
+
+- React 19
+- Vite 7
+- react-markdown
+- lucide-react
+
+## 📝 Licencia
+
+MIT
 
 ## React Compiler
 

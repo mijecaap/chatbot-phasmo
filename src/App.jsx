@@ -1,35 +1,95 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useRef, useEffect } from 'react';
+import ChatMessage from './components/ChatMessage';
+import ChatInput from './components/ChatInput';
+import { MessageCircle } from 'lucide-react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+  const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const sendMessage = async (userMessage) => {
+    // Add user message
+    const newUserMessage = { text: userMessage, isUser: true };
+    setMessages((prev) => [...prev, newUserMessage]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la respuesta del webhook');
+      }
+
+      const data = await response.json();
+      const botMessage = { text: data.reply, isUser: false };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage = {
+        text: '❌ Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta nuevamente.',
+        isUser: false,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div className="chat-container">
+        <div className="chat-header">
+          <MessageCircle size={24} />
+          <h1>Chatbot Phasmo</h1>
+        </div>
+
+        <div className="chat-messages">
+          {messages.length === 0 ? (
+            <div className="empty-state">
+              <MessageCircle size={64} />
+              <h2>¡Bienvenido!</h2>
+              <p>Escribe un mensaje para comenzar la conversación</p>
+            </div>
+          ) : (
+            messages.map((msg, index) => (
+              <ChatMessage
+                key={index}
+                message={msg.text}
+                isUser={msg.isUser}
+              />
+            ))
+          )}
+          {isLoading && (
+            <div className="typing-indicator">
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <ChatInput onSend={sendMessage} disabled={isLoading} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
