@@ -12,6 +12,10 @@ RUN npm i
 # Copy source code
 COPY . .
 
+# Accept build argument
+ARG VITE_WEBHOOK_URL
+ENV VITE_WEBHOOK_URL=$VITE_WEBHOOK_URL
+
 # Build the app
 RUN npm run build
 
