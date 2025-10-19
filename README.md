@@ -71,7 +71,29 @@ El webhook debe:
 - react-markdown
 - lucide-react
 
-## 📝 Licencia
+## � Docker
+
+### Build local
+```bash
+docker build -t chatbot-phasmo .
+```
+
+### Run local
+```bash
+docker run -p 3000:80 -e VITE_WEBHOOK_URL=https://tu-webhook-url.com chatbot-phasmo
+```
+
+### Despliegue en Easypanel
+
+1. Crea una nueva aplicación en Easypanel
+2. Conecta tu repositorio Git
+3. Easypanel detectará automáticamente el `Dockerfile`
+4. Configura la variable de entorno `VITE_WEBHOOK_URL` en el panel
+5. Despliega la aplicación
+
+**Nota:** Las variables de entorno deben configurarse en el momento del build ya que Vite las incrusta en el bundle durante la compilación.
+
+## �📝 Licencia
 
 MIT
 
